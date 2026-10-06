@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Wolf Wisdom — Becoming Humans
 
-## Getting Started
-
-First, run the development server:
+Next.js 16 (App Router, Cache Components) + Tailwind v4. Monochrome Yin/Yang base; House colours used only as accents.
 
 ```bash
+cp .env.example .env.local   # everything is optional — the site runs with no env vars
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Editing content (the "CMS")
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+All copy, prices and publish states live in `src/content/` — pages never hard-code them.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| File | What it controls |
+| --- | --- |
+| `houses.ts` | The Four Houses: copy, `status`, price/offer, inclusions, standalone alternatives, accent colour, artwork |
+| `bundles.ts` | Multi-House (Wolf / pack) memberships — all `published: false` for now |
+| `programs.ts` | Creative Flow, Practice Lab, Chakra Series (standalone work) |
+| `journeys.ts` | Retreats & residencies (Ireland, Bali, Shasta, Greece) |
+| `events.ts` | Fallback events shown until Google Calendar is connected |
+| `site.ts` | Nav, contact email, "Member pricing" wording |
 
-## Learn More
+**House status:** `active` (price + Join button) · `evolving` (visible, marked "In development", "Keep me posted") · `hidden` (not rendered anywhere).
 
-To learn more about Next.js, take a look at the following resources:
+- **Activate Wolf or Dragon:** set `status: "active"`, add an `offer` and `includes`, set its `STRIPE_PRICE_*` env var.
+- **Launch a multi-House bundle:** set `published: true` and add an `offer` in `bundles.ts`. The membership page swaps its "being designed" note for real options.
+- **Add final artwork:** set `artwork: { src, alt }` on a House (put files in `public/houses/`). It replaces the generated vortex-eye placeholder everywhere.
+- **Change palettes:** edit each House's `accent` once confirmed with the artist.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Stripe (connect later)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Create Products/Prices in Stripe: Whale €40/mo, Eagle €40/mo, Creative Flow €30/mo, Practice Lab ("customer chooses price" for donations), and the Chakra Series once its price is set.
+2. Set `STRIPE_SECRET_KEY` and the `STRIPE_PRICE_*` IDs.
+3. Add a webhook to `https://<domain>/api/stripe/webhook` (events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`) and set `STRIPE_WEBHOOK_SECRET`. Locally: `stripe listen --forward-to localhost:3000/api/stripe/webhook`.
 
-## Deploy on Vercel
+Join buttons call the `startCheckout` server action (`src/app/actions/checkout.ts`), which creates a Checkout Session. Until Stripe is configured, they redirect to `/join/unavailable` ("register interest"). Offers with an `eligibility` statement (Whale, Creative Flow, Practice Lab) require a confirmation checkbox, and the confirmation is stored in the session/subscription metadata. Membership provisioning goes in the webhook `TODO`s once a member area exists.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Google Calendar (connect later)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Events page** (`/events`, `/api/events`): create a Google Cloud service account, enable the Calendar API, share your calendar(s) with the service-account email, then set `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`, `GOOGLE_CALENDAR_PUBLIC_ID` and optionally `GOOGLE_CALENDAR_MEMBERS_ID`. Tag events with `#whale #eagle #wolf #dragon` in the description; anything on the members calendar, or tagged `#members`, shows a "Members only" label. Results are cached for a few minutes.
+- **1:1 booking** (`/sessions`): set `NEXT_PUBLIC_GOOGLE_BOOKING_URL` to a Google Calendar appointment-schedule booking page and it is embedded on the page. Until then, the page shows an email enquiry button instead.
