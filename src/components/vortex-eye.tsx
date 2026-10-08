@@ -66,9 +66,9 @@ export function VortexEye({ accent, seed = 1 }: { accent: string; seed?: number 
           <stop offset="100%" stopColor={accent} stopOpacity="0" />
         </radialGradient>
         <linearGradient id={`${id}-m`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#f3f1ec" stopOpacity="0.9" />
+          <stop offset="0%" stopColor="#eef0f3" stopOpacity="0.9" />
           <stop offset="45%" stopColor={accent} stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#f3f1ec" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#eef0f3" stopOpacity="0.25" />
         </linearGradient>
         <clipPath id={`${id}-eye`}>
           <path d="M20 200 Q200 40 380 200 Q200 360 20 200 Z" />
@@ -96,13 +96,13 @@ export function VortexEye({ accent, seed = 1 }: { accent: string; seed?: number 
       <path
         d="M20 200 Q200 40 380 200 Q200 360 20 200 Z"
         fill="none"
-        stroke="#f3f1ec"
+        stroke="#eef0f3"
         strokeOpacity="0.5"
         strokeWidth="0.8"
       />
-      <circle cx="200" cy="200" r="16" fill="#0c0c0b" />
+      <circle cx="200" cy="200" r="16" fill="#07080c" />
       <circle cx="200" cy="200" r="16" fill="none" stroke={accent} strokeWidth="1" />
-      <circle cx="194" cy="194" r="3" fill="#f3f1ec" opacity="0.8" />
+      <circle cx="194" cy="194" r="3" fill="#eef0f3" opacity="0.8" />
     </svg>
   );
 }

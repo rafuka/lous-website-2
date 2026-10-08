@@ -20,8 +20,9 @@ export type PublishStatus = "active" | "evolving" | "hidden";
 export type Price =
   | { kind: "recurring"; amount: number; currency: Currency; interval: "month" | "year" }
   | { kind: "one-time"; amount: number; currency: Currency }
-  | { kind: "donation" }
+  | { kind: "donation"; suggested?: number; currency?: Currency; firstFree?: boolean }
   | { kind: "member-pricing" }
+  | { kind: "members-only" }
   | { kind: "tbc" };
 
 /**
@@ -103,17 +104,40 @@ export type Bundle = {
 
 export type ProgramKind = "program" | "practice" | "series" | "gathering" | "sessions";
 
+/**
+ * - `program`  — a structured journey with a defined arc (Creative Flow, Chakra Series).
+ * - `practice` — recurring or spontaneous live practice (Practice Lab, Akawa, …).
+ * Standalone never means open to everyone: each keeps its own eligibility.
+ */
+export type ProgramCategory = "program" | "practice";
+
 export type Program = {
   slug: string;
   title: string;
+  category: ProgramCategory;
   kind: ProgramKind;
   strapline: string;
   summary: string;
   description: string[];
   facts: { label: string; value: string }[];
+  /** Extra titled lists, e.g. "Format" or "Practical agreements". */
+  lists?: { title: string; items: string[] }[];
+  /** A titled group of outbound links, e.g. where to train in VortexHealing. */
+  resources?: { title: string; intro?: string; links: { label: string; href: string }[] };
+  /** A community to join alongside booking, e.g. a WhatsApp group. */
+  community?: { label: string; href: string; note?: string };
   eligibilityLabel?: string;
   /** Houses whose membership includes this program. */
   includedIn: HouseSlug[];
+  /** Narrows the inclusion, e.g. "For women members". */
+  inclusionNote?: string;
+  /** The regular rhythm, shown on the calendar, e.g. "3× a month · Mondays 10:00 CET". */
+  rhythm?: string;
+  /**
+   * Lower-case words that identify this offering in calendar event titles or
+   * descriptions (e.g. "akawa" also matches the tag #akawa).
+   */
+  calendarKeywords?: string[];
   offers: Offer[];
   status: PublishStatus;
   order: number;
@@ -126,7 +150,9 @@ export type Journey = {
   title: string;
   theme: string;
   description: string;
-  status: "planned" | "forming" | "open" | "past";
+  /** `planned` and `exploring` must never read as confirmed bookings. */
+  status: "planned" | "exploring" | "open" | "past";
+  /** Shown next to the status, e.g. "Dates TBC". */
   note?: string;
   relatedProgram?: string;
 };
@@ -141,5 +167,7 @@ export type CalendarEvent = {
   /** Which Houses' members this event is for. Empty = public. */
   houses: HouseSlug[];
   membersOnly: boolean;
+  /** Slug of the program/practice this event belongs to, if recognised. */
+  offering?: string;
   url?: string;
 };

@@ -51,15 +51,30 @@ export function PriceTag({ price, size = "lg" }: { price: Price; size?: "lg" | "
   );
 }
 
-export function Pill({ children, accent }: { children: ReactNode; accent?: string }) {
+export function Pill({ children, accent, shared }: { children: ReactNode; accent?: string; shared?: boolean }) {
   return (
     <span
-      className="eyebrow inline-flex whitespace-nowrap items-center gap-2 rounded-full border border-line px-3 py-1.5 !text-[0.62rem]"
+      className="eyebrow inline-flex max-w-full items-center gap-2 rounded-full border border-line px-3 py-1.5 !text-[0.62rem]"
       style={accent ? { borderColor: accent } : undefined}
     >
-      {accent && <span className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />}
+      {(accent || shared) && <CategoryMark accent={accent} shared={shared} />}
       {children}
     </span>
+  );
+}
+
+/**
+ * Small category dot for calendar and listings: a House accent, or the opal
+ * mark for experiences shared across Houses (never forced into one colour).
+ */
+export function CategoryMark({ accent, shared, className = "h-1.5 w-1.5" }: { accent?: string; shared?: boolean; className?: string }) {
+  if (shared) return <span aria-hidden className={`bg-opal-mark shrink-0 rounded-full ring-1 ring-current/40 ${className}`} />;
+  return (
+    <span
+      aria-hidden
+      className={`shrink-0 rounded-full ${accent ? "" : "border border-current opacity-50"} ${className}`}
+      style={accent ? { background: accent } : undefined}
+    />
   );
 }
 

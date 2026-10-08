@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JoinForm } from "@/components/join-form";
-import { ArrowLink, Eyebrow, Pill, PriceTag, Section } from "@/components/ui";
+import { ArrowLink, CategoryMark, Eyebrow, Pill, PriceTag, Section } from "@/components/ui";
 import { HouseArtwork } from "@/components/vortex-eye";
 import { getHouse, getVisibleHouses } from "@/content/houses";
+import { sharedMembership } from "@/content/membership";
 import { site } from "@/content/site";
 import { formatPriceInline } from "@/lib/format";
 
@@ -24,6 +25,7 @@ export default async function HousePage({ params }: PageProps<"/houses/[slug]">)
 
   const others = getVisibleHouses().filter((h) => h.slug !== house.slug);
   const active = house.status === "active";
+  const shared = active && sharedMembership.houses.includes(house.slug) ? sharedMembership.includes : [];
 
   return (
     <>
@@ -89,12 +91,17 @@ export default async function HousePage({ params }: PageProps<"/houses/[slug]">)
         </div>
       </Section>
 
-      {house.includes.length > 0 && (
+      {house.includes.length + shared.length > 0 && (
         <Section tone="light" className="border-t border-line py-24">
           <div className="grid gap-12 md:grid-cols-12">
             <div className="md:col-span-4">
               <Eyebrow>What&apos;s included</Eyebrow>
               <h2 className="display mt-6 text-5xl">Inside {house.name}</h2>
+              {shared.length > 0 && (
+                <p className="text-muted mt-6 flex items-center gap-2 text-sm">
+                  <CategoryMark shared className="h-2 w-2" /> Shared by every House
+                </p>
+              )}
             </div>
             <ul className="divide-y divide-line-light border-y border-line md:col-span-8">
               {house.includes.map((inc) => (
@@ -104,6 +111,18 @@ export default async function HousePage({ params }: PageProps<"/houses/[slug]">)
                     {inc.detail && <p className="text-muted mt-1 text-sm">{inc.detail}</p>}
                   </div>
                   {inc.audienceNote && <Pill accent={house.accent}>{inc.audienceNote}</Pill>}
+                </li>
+              ))}
+              {shared.map((inc) => (
+                <li key={inc.title} className="flex flex-wrap items-baseline justify-between gap-4 py-6">
+                  <div>
+                    <p className="flex items-center gap-3">
+                      <CategoryMark shared className="h-2 w-2" />
+                      <span className="display text-2xl">{inc.title}</span>
+                    </p>
+                    {inc.detail && <p className="text-muted mt-1 max-w-xl text-sm">{inc.detail}</p>}
+                  </div>
+                  {inc.audienceNote && <Pill shared>{inc.audienceNote}</Pill>}
                 </li>
               ))}
             </ul>
@@ -123,11 +142,14 @@ export default async function HousePage({ params }: PageProps<"/houses/[slug]">)
                 const body = (
                   <>
                     <p className="display text-2xl">{alt.title}</p>
-                    <p className="text-muted mt-2 text-sm">{formatPriceInline(alt.price)}</p>
+                    <p className="text-muted mt-2 text-sm">
+                      {formatPriceInline(alt.price)}
+                      {alt.note ? ` ${alt.note}` : ""}
+                    </p>
                   </>
                 );
                 return (
-                  <li key={alt.title} className="bg-paper p-6">
+                  <li key={alt.title} className="bg-paper/90 p-6">
                     {alt.href ? (
                       <Link href={alt.href} className="block hover:opacity-70">
                         {body}

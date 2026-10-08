@@ -1,7 +1,8 @@
 import "server-only";
 import { cacheLife } from "next/cache";
 import { JWT } from "google-auth-library";
-import { fallbackEvents } from "@/content/events";
+import { fixedEvents } from "@/content/events";
+import { isMembersOnly, matchOffering } from "@/content/programs";
 import type { CalendarEvent, HouseSlug } from "@/content/types";
 
 /**
@@ -16,11 +17,18 @@ import type { CalendarEvent, HouseSlug } from "@/content/types";
  *   GOOGLE_CALENDAR_PUBLIC_ID            calendar for open events
  *   GOOGLE_CALENDAR_MEMBERS_ID           calendar for members-only events (optional)
  *
- * Tag events with House hashtags in the description to associate them with
- * Houses: #whale #eagle #wolf #dragon. Anything on the members calendar, or
- * tagged #members, is marked members-only.
+ * Events are recognised as an offering from their title or a tag in the
+ * description (#akawa, "Practice Lab", "Reclaiming Our Blood", "Live Time of
+ * Presence", …; see `calendarKeywords` in programs.ts). The offering supplies
+ * eligibility, membership inclusion, price and booking link, and its Houses
+ * unless the event is tagged #whale #eagle #wolf #dragon. Anything on the
+ * members calendar, tagged #members, or a members-only offering (Live Time of
+ * Presence) is marked members-only.
  *
- * Until configured, the site shows the fallback events in src/content/events.ts.
+ * Only these two calendars are read. The private calendar is never exposed —
+ * it only removes unavailable 1:1 times inside the booking page.
+ *
+ * Until configured, the site shows the fixed dates in src/content/events.ts.
  */
 
 const HOUSE_TAGS: HouseSlug[] = ["whale", "eagle", "wolf", "dragon"];
@@ -59,7 +67,7 @@ async function fetchCalendar(calendarId: string, token: string, membersCalendar:
     timeMin: new Date().toISOString(),
     singleEvents: "true",
     orderBy: "startTime",
-    maxResults: "50",
+    maxResults: "100",
   });
   const res = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`,
@@ -72,6 +80,8 @@ async function fetchCalendar(calendarId: string, token: string, membersCalendar:
     const start = e.start?.dateTime ?? e.start?.date;
     if (!start) return [];
     const text = `${e.summary ?? ""} ${e.description ?? ""}`.toLowerCase();
+    const offering = matchOffering(text);
+    const tagged = HOUSE_TAGS.filter((h) => text.includes(`#${h}`));
     return [
       {
         id: e.id,
@@ -80,8 +90,9 @@ async function fetchCalendar(calendarId: string, token: string, membersCalendar:
         end: e.end?.dateTime ?? e.end?.date,
         description: e.description?.replace(/#\w+/g, "").trim() || undefined,
         location: e.location,
-        houses: HOUSE_TAGS.filter((h) => text.includes(`#${h}`)),
-        membersOnly: membersCalendar || text.includes("#members"),
+        houses: tagged.length ? tagged : (offering?.includedIn ?? []),
+        membersOnly: membersCalendar || text.includes("#members") || (offering ? isMembersOnly(offering) : false),
+        offering: offering?.slug,
       },
     ];
   });
@@ -92,8 +103,7 @@ export async function getUpcomingEvents(): Promise<{ events: CalendarEvent[]; so
   cacheLife("minutes");
 
   const now = Date.now();
-  const upcomingFallback = () =>
-    fallbackEvents.filter((e) => new Date(e.end ?? e.start).getTime() >= now);
+  const upcomingFallback = () => fixedEvents.filter((e) => new Date(e.end ?? e.start).getTime() >= now);
 
   if (!isCalendarConfigured()) return { events: upcomingFallback(), source: "fallback" };
 

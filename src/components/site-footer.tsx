@@ -45,6 +45,9 @@ export function SiteFooter() {
           <a href={`mailto:${site.contactEmail}`} className="link-underline mt-5 inline-block text-sm">
             {site.contactEmail}
           </a>
+          <Link href={site.cta.href} className="link-underline mt-3 block w-fit text-sm">
+            {site.cta.label} →
+          </Link>
         </div>
       </div>
       <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-4 border-t border-line px-6 py-6 text-xs lg:px-10">

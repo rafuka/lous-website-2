@@ -7,7 +7,7 @@ import { Mark } from "./mark";
 
 type NavItem = { href: string; label: string };
 
-export function SiteHeader({ name, nav }: { name: string; nav: NavItem[] }) {
+export function SiteHeader({ name, nav, cta }: { name: string; nav: NavItem[]; cta: NavItem }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const [lastPath, setLastPath] = useState(pathname);
@@ -24,7 +24,7 @@ export function SiteHeader({ name, nav }: { name: string; nav: NavItem[] }) {
           <span className="eyebrow">{name}</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Main">
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="Main">
           {nav.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
@@ -39,10 +39,10 @@ export function SiteHeader({ name, nav }: { name: string; nav: NavItem[] }) {
             );
           })}
           <Link
-            href="/membership"
+            href={cta.href}
             className="rounded-full border border-paper/60 px-5 py-2 text-sm transition-colors hover:bg-paper hover:text-ink"
           >
-            Join a House
+            {cta.label}
           </Link>
         </nav>
 
@@ -68,8 +68,8 @@ export function SiteHeader({ name, nav }: { name: string; nav: NavItem[] }) {
               </li>
             ))}
             <li className="pt-4">
-              <Link href="/membership" className="inline-block rounded-full bg-paper px-6 py-3 text-sm text-ink">
-                Join a House
+              <Link href={cta.href} className="inline-block rounded-full bg-paper px-6 py-3 text-sm text-ink">
+                {cta.label}
               </Link>
             </li>
           </ul>

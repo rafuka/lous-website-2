@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import { HouseCard } from "@/components/house-card";
 import { ArrowLink, PageIntro, Section } from "@/components/ui";
 import { getVisibleHouses } from "@/content/houses";
+import { site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "The Four Houses",
-  description: "Whale, Eagle, Wolf and Dragon — four doors into The Wolf Wisdom.",
+  description: "Whale, Eagle, Wolf and Dragon — four ways of entering the same school.",
 };
 
 export default function HousesPage() {
   const houses = getVisibleHouses();
   return (
     <>
-      <PageIntro eyebrow="The Four Houses" title="Four doors. One ecosystem.">
-        Each House has its own animal, visual language and field of exploration. They are not ranked; they are
-        different relationships to the same work of becoming human.
+      <PageIntro eyebrow="The Four Houses" title={site.housesUmbrella}>
+        Each House has its own animal, visual language and field of exploration. They are not ranked, and not separate
+        — different ways of entering the same school, the same village, the same inquiry into becoming human.
       </PageIntro>
 
       <section className="tone-dark pb-24">

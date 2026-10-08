@@ -8,6 +8,8 @@ import type { House, HouseSlug } from "./types";
  * To take one off the public site entirely: `status: "hidden"`.
  *
  * Accent colours are placeholders until palettes are confirmed with the artist.
+ * `includes` lists only what is specific to a House — the shared layer lives
+ * in membership.ts.
  */
 export const houses: House[] = [
   {
@@ -18,10 +20,10 @@ export const houses: House[] = [
     coreIdea: "Depth",
     emotionalTerritory: "Depth, receiving, spaciousness, the inner world",
     summary:
-      "A House for VortexHealing students: continuity of practice, experimentation, creativity and community between formal trainings.",
+      "For VortexHealing students. The House of depth, continuity of practice, experimentation and creative application.",
     description: [
-      "The Whale is a dedicated home for VortexHealing students. It holds the space between formal trainings, where practice either deepens or quietly fades.",
-      "Here we keep practising together, experiment, create, and stay in contact with one another as a living community of practitioners.",
+      "The Whale is a home for VortexHealing students. It holds the space between formal trainings — where practice either deepens or quietly fades.",
+      "Here we keep practising together, experiment, and carry the work into creative life, as a living community of practitioners.",
     ],
     audience: "VortexHealing students",
     eligibilityLabel: "VortexHealing students only",
@@ -36,20 +38,11 @@ export const houses: House[] = [
     includes: [
       {
         title: "Practice Lab — The Origin",
-        detail: "Live practice sessions, currently planned three times a month.",
+        detail: "Three live sessions a month, practising VortexHealing tools in community.",
       },
       {
         title: "Unlock Your Creative Flow",
-        detail: "All live sessions of the six-month program (Nov 2026 – Apr 2027).",
-      },
-      {
-        title: "Reclaiming Our Blood",
-        detail: "Included for women in the Whale membership.",
-        audienceNote: "For women members",
-      },
-      {
-        title: "Members-only gatherings",
-        detail: "Occasional spontaneous events, shared as they arise.",
+        detail: "Four 2-hour live sessions a month, November 2026 – April 2027.",
       },
     ],
     standaloneAlternatives: [
@@ -61,7 +54,7 @@ export const houses: House[] = [
       {
         title: "Practice Lab — The Origin",
         price: { kind: "donation" },
-        href: "/programs/practice-lab",
+        href: "/practices/practice-lab",
       },
     ],
     accent: "#6f8fa0",
@@ -75,12 +68,12 @@ export const houses: House[] = [
     coreIdea: "Perspective",
     emotionalTerritory: "Perspective, vision, awareness, expansion",
     summary:
-      "An ongoing practice of presence, embodiment, awareness and personal exploration — open to everyone.",
+      "Open beyond the VortexHealing community. A wider practice of perspective, awareness, embodiment and remembrance.",
     description: [
-      "The Eagle is the open House. It is for anyone who wants a living, ongoing practice of presence, embodiment and awareness — no prior training required.",
-      "Members meet regularly in Akawa sessions and receive member pricing across The Wolf Wisdom programs, 1:1 work and gatherings.",
+      "The Eagle is open to everyone — no prior training required. It is a wider practice of perspective, awareness, embodiment and remembrance.",
+      "Its heart is Akawa: entering, together, a field in which the system can recognise what is already present beneath conditioning.",
     ],
-    audience: "Open to the general community",
+    audience: "Open to everyone",
     status: "active",
     offer: {
       id: "house-eagle",
@@ -90,26 +83,23 @@ export const houses: House[] = [
     },
     includes: [
       {
-        title: "Akawa sessions",
-        detail: "Recurring live sessions, currently on a rhythm of three a month.",
-      },
-      {
-        title: "Member pricing on programs",
-        detail: "Preferential pricing on upcoming The Wolf Wisdom programs.",
-      },
-      { title: "Member pricing on 1:1 sessions" },
-      {
-        title: "Member pricing on women-only gatherings",
-        audienceNote: "For eligible members",
-      },
-      {
-        title: "Spontaneous gatherings",
-        detail: "Occasional drop-in events through the year, free for members.",
+        title: "Akawa live sessions",
+        detail: "The Eagle's core practice — a regular rhythm of live sessions in a field of remembrance.",
       },
     ],
     standaloneAlternatives: [
-      { title: "1:1 sessions", price: { kind: "member-pricing" }, href: "/sessions" },
-      { title: "Programs & retreats", price: { kind: "member-pricing" }, href: "/programs" },
+      {
+        title: "Akawa",
+        price: { kind: "one-time", amount: 35, currency: "EUR" },
+        href: "/practices/akawa",
+        note: "per session",
+      },
+      {
+        title: "Resonance Flow™ 1:1",
+        price: { kind: "one-time", amount: 120, currency: "EUR" },
+        href: "/sessions",
+        note: "per session",
+      },
     ],
     accent: "#a88c5f",
     order: 2,
@@ -121,15 +111,14 @@ export const houses: House[] = [
     invitation: "Join the pack",
     coreIdea: "Belonging",
     emotionalTerritory: "Belonging, instinct, individuality and the pack",
-    summary:
-      "Belonging across Houses — a simpler way to be part of more than one, without losing your own path.",
+    summary: "Belonging, instinct and the pack. Its purpose and shape are still being explored.",
     description: [
-      "The Wolf is being shaped as the House of belonging: a way to walk with more than one House at once, held in a single, simpler membership.",
-      "Belonging without losing individuality. Details are still being designed.",
+      "The Wolf carries the territory of belonging without losing individuality.",
+      "Its purpose, membership and final language are still in development, and will be shared once they are ready.",
     ],
-    audience: "Members of more than one House",
+    audience: "To be shared",
     status: "evolving",
-    evolvingNote: "The Wolf is still being designed. Leave your name to hear when it opens.",
+    evolvingNote: "The Wolf is in development. Nothing here is final yet — leave your name to hear when it takes shape.",
     includes: [],
     standaloneAlternatives: [],
     accent: "#8d9196",
@@ -142,13 +131,14 @@ export const houses: House[] = [
     invitation: "Explore magic",
     coreIdea: "Magic",
     emotionalTerritory: "Magic, transformation, mystery, possibility",
-    summary: "A shared House for magic, mystery and transformation — being shaped in collaboration.",
+    summary: "Magic, mystery and transformation. Its purpose and shape are still being explored.",
     description: [
-      "The Dragon is a House being dreamed into form together with a collaborator. Its shape, offerings and rhythm will be shared once they are ready.",
+      "The Dragon is a House being dreamed into form, possibly in collaboration.",
+      "Its purpose, membership, collaboration structure and final language are still in development, and will be shared once they are ready.",
     ],
     audience: "To be shared",
     status: "evolving",
-    evolvingNote: "The Dragon is being shaped in collaboration. Nothing here is final yet.",
+    evolvingNote: "The Dragon is in development. Nothing here is final yet — leave your name to hear when it takes shape.",
     includes: [],
     standaloneAlternatives: [],
     accent: "#9a5a48",

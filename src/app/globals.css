@@ -2,20 +2,25 @@
 
 /*
  * The Wolf Wisdom — global visual language.
- * Predominantly black and white (Yin/Yang). House colours appear only as
- * accents, via the --accent custom property set per House.
+ * Black and white from a distance (Yin/Yang), but neither pole is flat:
+ * - White is not ivory: pearl, silver, moonlight, a faint opalescence.
+ * - Black is not #000: Nothingness, deep enough to hold colour — indigo,
+ *   violet, teal and ember emerge from the shadow.
+ * Colour lives inside the material, never as a palette. House colours appear
+ * only as accents, via the --accent custom property set per House.
+ * Not final — the material treatment is still in exploration.
  */
 
 @theme {
-  --color-ink: #0c0c0b;
-  --color-ink-soft: #1a1a18;
-  --color-paper: #f3f1ec;
-  --color-paper-soft: #e8e5de;
-  --color-stone: #8a8781;
-  --color-line-dark: rgb(243 241 236 / 0.14);
-  --color-line-light: rgb(12 12 11 / 0.14);
+  --color-ink: #07080c;
+  --color-ink-soft: #12141b;
+  --color-paper: #eef0f3;
+  --color-paper-soft: #e1e4ea;
+  --color-stone: #8a8e97;
+  --color-line-dark: rgb(238 240 243 / 0.13);
+  --color-line-light: rgb(7 8 12 / 0.13);
 
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-display: var(--font-display-face), ui-serif, Georgia, serif;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
@@ -56,24 +61,65 @@ body {
   color: var(--color-paper);
 }
 
+/* Fine grain shared by both poles — gives the surfaces a material, printed feel. */
+:root {
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Restrained iridescence: pearl overtones (white, lilac, blue-green, rose). */
+  --opal: linear-gradient(115deg, #f6f4ff 0%, #dcd6f2 22%, #d6ecee 45%, #f3dfe7 68%, #e6efe2 85%, #f6f4ff 100%);
+  /* The same overtones, deepened so a small mark still reads on pearl. */
+  --opal-mark: conic-gradient(from 200deg, #a99be0, #7fc0c8, #e0a3bb, #c9d9a8, #a99be0);
+}
+
 /* Tones — sections alternate between yin (dark) and yang (light). */
 .tone-dark {
-  background: var(--color-ink);
+  background-color: var(--color-ink);
+  background-image:
+    var(--grain),
+    radial-gradient(110% 80% at 0% 0%, rgb(52 42 110 / 0.22), transparent 60%),
+    radial-gradient(90% 70% at 100% 100%, rgb(16 72 82 / 0.2), transparent 62%),
+    radial-gradient(55% 45% at 92% 6%, rgb(110 34 48 / 0.1), transparent 70%);
   color: var(--color-paper);
   --line: var(--color-line-dark);
-  --muted: rgb(243 241 236 / 0.62);
+  --muted: rgb(238 240 243 / 0.62);
   --btn-fg: var(--color-ink);
 }
 .tone-light {
-  background: var(--color-paper);
+  background-color: var(--color-paper);
+  background-image:
+    var(--grain),
+    radial-gradient(90% 70% at 8% 0%, rgb(255 255 255 / 0.95), transparent 60%),
+    radial-gradient(70% 60% at 100% 15%, rgb(218 210 242 / 0.45), transparent 65%),
+    radial-gradient(80% 65% at 15% 100%, rgb(204 232 234 / 0.4), transparent 65%),
+    radial-gradient(55% 45% at 95% 95%, rgb(244 216 226 / 0.35), transparent 70%);
   color: var(--color-ink);
   --line: var(--color-line-light);
-  --muted: rgb(12 12 11 / 0.6);
+  --muted: rgb(7 8 12 / 0.6);
   --btn-fg: var(--color-paper);
 }
 
 .text-muted {
-  color: var(--muted, rgb(12 12 11 / 0.6));
+  color: var(--muted, rgb(7 8 12 / 0.6));
+}
+
+/* Opal — a pearl overtone used sparingly: shared experiences, fine rules. */
+.bg-opal {
+  background-image: var(--opal);
+}
+.bg-opal-mark {
+  background-image: var(--opal-mark);
+}
+.opal-rule {
+  height: 1px;
+  background-image: var(--opal);
+  opacity: 0.7;
+}
+
+/* Moonlit metal for the largest display type on dark grounds. */
+.text-moonlit {
+  background-image: linear-gradient(172deg, #ffffff 0%, #e4e6ee 38%, #b9bdc9 70%, #dcd8ec 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .border-line {
   border-color: var(--line, var(--color-line-light));
@@ -91,9 +137,16 @@ body {
 
 .display {
   font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 0.95;
+  font-weight: 340;
+  font-variation-settings: "SOFT" 60, "WONK" 0;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.font-display.italic,
+.display.italic,
+.display em {
+  font-variation-settings: "SOFT" 100, "WONK" 1;
 }
 
 /* Metallic grain over House artwork placeholders. */
